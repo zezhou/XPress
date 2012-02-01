@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>用户管理</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/panel.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/form.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/table.css" />
+    <script src="../../../js/jquery-1.4.2.min.js"></script>
+    <script src="../../../js/table.js"></script>
+    <style>
+        .form{width :350px;}
+        .form .title{width:100px;}
+    </style>
+</head>
+<body>
+<div id="container">
+    <div id="menu" class="menu"><span class="button" onclick="user.create()">新建用户</span></div>
+    <div  id="topPanel" style="display:none" class="form">
+        <div class="row">
+            <div class="title">用户名:</div>
+            <div class="username input"><input type='text' name='username' size=20 ></div>
+        </div>
+        <div class="row">
+            <div class="title">昵称:</div>
+            <div class="input"><input type="passport" size="20" name="nickname"></div>
+        </div>
+        <div class="row">
+            <div class="title">密码:</div>
+            <div class="input"><input type="password" size="20" name="password"></div>
+        </div>
+        <div class="row">
+            <div class="title">确认密码:</div>
+            <div class="input"><input type="password" size="20" name="repassword"></div>
+        </div>
+        <div class="btn"><span class="button" onclick="user.edit()">确认</span>&nbsp;&nbsp;<a href="###" onclick="$('#topPanel').hide();">取消</a></div>
+        <div style="clear"></div>
+    </div>
+
+    <div id="main">
+        <div id="user_table" class="table">载入中...</div>
+        <div style="clear:both"></div>
+    </div>
+</div>
+
+</body>
+<script>
+    var user={};
+    user.list=function(){
+        $.post("../../../api.php",{"request":"admin/data","action":"getUserList"},function(response){
+            if (response && response.success){
+                user.data=response.data;
+                $.table("#user_table",user.data,{
+                    "th":["id","用户名","笔名","操作"],
+                    "td":["","","",user.list.getOpt]
+                });
+            }
+        },"json");
+    };
+    /**
+    * @param {int} table的当前行数
+    * @param {object} 生成table的数据
+    * @return {HTML} html字符串
+    */
+    user.list.getOpt=function(data){
+        return "<a href='###' onclick='user.edit.show("+data[0]+")'>修改</a>&nbsp;|&nbsp;<a href='###' onclick='user.delete("+data[0]+")'>删除</a>";
+    };
+
+    user.edit=function(){
+        var username=$("input[name=username]").val();
+        var password=$("input[name=password]").val();
+        var repassword=$("input[name=repassword]").val();
+        var nickname=$("input[name=nickname]").val();
+        var config={"request":"user/manage","action":"modify"};
+        var data={};
+        if (password && repassword){
+            if (password===repassword){
+                config['password']=password;
+                }else{
+                alert('两次输入密码不一致');       
+                return false;
+            }
+        }
+        if (username){
+            config['username']=username;
+        }
+        if (nickname){
+            config['nickname']=nickname;
+        }
+        $.post("../../../api.php",config,function(response){
+            if (response && response.success){
+                alert("用户信息已更新");
+                location.reload();
+                }else{
+                alert("用户信息更新失败");
+            }
+        },"json");
+    };
+    user.edit.show=function(id){
+        for (var i=0;i<user.data.length;i++){
+            var item=user.data[i];
+            if(item[0]===id){
+                $("#topPanel").show();
+                $("#topPanel input[name=username]").val(item[1]);
+                $("#topPanel input[name=nickname]").val(item[2]);
+                return true;
+            } 
+        }
+    };
+
+    user.create=function(){
+        $("#topPanel").show();
+    };
+
+    user.delete=function(index){
+    
+        var oConfirm =confirm("Are you sure to delete user?");
+        if (oConfirm){
+            if (index){
+                $.post("../../../api.php",{"request":"user/manage","action":"delete","index":index},function(response){
+                    if (response && response.success){
+                        alert('Delete success.');
+                        location.reload();
+                        }else{
+                        alert('Delete error.');
+                    }
+                },"json");
+            }
+        }
+    };
+
+    var init=function(){
+        user.list();
+    };
+
+    init();
+</script>
+</html>

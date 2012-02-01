@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>管理登录            </title>
+		<link rel="stylesheet" type="text/css" href="../../css/login.css" >
+		<script type="text/javascript">		
+        function checkForm(){
+            var checkUn=checkUsername();
+            var checkPw=checkPassword();
+            var checkV=checkVerify();
+            if(checkUn==true && checkPw==true && checkV==true){
+                return true;
+            }else{
+                var msg="";
+                if(checkUn!==true) msg+="您输入的用户名错误，请重新输入！\n";
+                if(checkPw!==true) msg+="您输入的密码错误，请重新输入！\n";
+                if(checkV!==true) msg+="您输入的验证码错误，请重新输入！";
+                return false;	
+            }
+        }
+        function checkUsername(){
+            var username=document.getElementById("form1").username.value;
+            if (username=="") return false;
+            else return true;
+        }
+        function checkPassword(){
+            var password=document.getElementById("form1").password.value;
+            if (password=="") return false;
+            else return true;
+        }
+        function checkVerify(){
+            var verify=document.getElementById("form1").verify.value;
+            if (verify=="") return false;
+            else return true;
+        }
+
+    </script>
+	</head>
+
+	<body>
+		<div id="container">
+			<div id="main">
+				<h1 id="header">管理登录</h1>
+				<div id="errMsg1"></div>
+				<form name="login_form" method="post" action="../../index.php" id="form1">
+				<div id="username_block"><label><div class="t1">用户名：</div><div class="t2"><input name="username" id="username" type="text" /></div></label></div>
+				<div id="password_block"><label><div class="t1">密码：</div><div class="t2"><input name="password" id="password" type="password"/></div></label></div>
+				<label for="recall">记住我</label><input id="recall" type="checkbox" name="recall"/></p></div>
+				<div id="submit_block"><input id="login_submit" name="login_submit" type="submit" value="提&nbsp;&nbsp;交" onclick="return checkForm();"><span class="t3">&nbsp;&nbsp;<a href="../../index.php?action=lostpassword">忘记密码</a>&nbsp;&nbsp;<a href="../../../index.html">返回</a></span></div>
+				<div id="footer">&copy;XU&nbsp;BLOG&nbsp;2008</div>
+				</form>
+			</div>
+		</div>
+
+		<script>
+		        var hasMsg=/msg=([^&]*)\&?/.exec(window.location.href);
+                if (hasMsg&&hasMsg.length>1){
+                    errMsg=hasMsg[1];
+                }
+				if(typeof(errMsg)!=="undefined" && errMsg){
+					var add=document.getElementById('errMsg1').innerHTML=errMsg;
+				}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>文章管理</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/panel.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/form.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/table.css" />
+    <script src="../../../js/jquery-1.4.2.min.js"></script>
+    <script src="../../../js/table.js"></script>
+</head>
+<body>
+<div id="container">
+	<div id="main">
+        <div id="article_table" class="table">载入中...</div>
+        <div style="clear:both"></div>
+    </div>
+</div>
+
+</body>
+<script>
+var article={};
+
+article.list=function(){
+    $.post("../../../api.php",{"request":"admin/data","action":"getArticleList"},function(response){
+        if (response && response.success){
+            $.table("#article_table",response.data,{
+                "th":["ID","标题","操作"],
+                "td":["","",null/*url for view*/,article.list.getOpt]
+            });
+        }
+    },"json");
+}
+
+/**
+ * @param {object} 生成该行的数据
+ * @return {HTML} html字符串
+ */
+article.list.getOpt=function(data){
+    return "<a href='../../../"+data[2]+"' target='_blank'>查看</a>&nbsp;| \
+    &nbsp;<a href='./post.html#type=edit#id="+data[0]+"'>修改</a>&nbsp;| \
+    &nbsp;<a href='###' onclick='article.delete("+data[0]+")'>删除</a>";
+}
+
+
+article.delete=function(id){
+    var oConfirm =confirm("Are you sure to delete article?");
+    if(oConfirm){
+        $.post("../../../api.php",{
+            "request":"article/edit",
+            "action":"delete",
+            "id":id
+            },function(response){
+                if(response&&response.success){
+                    alert("删除文章成功！");
+                    location.reload();
+                }else{
+                    alert("删除文章失败.");
+                }
+            },
+            "json");
+    }
+}
+
+var init=function(){
+    article.list();
+}
+init();
+</script>
+</html>

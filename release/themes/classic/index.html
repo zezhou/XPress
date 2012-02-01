@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title><{$site_name/}></title>
+        <link rel="stylesheet" type="text/css" href="css/base.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="themes/classic/global.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="themes/classic/index.css" media="screen">
+        <link href="rss.xml" type="application/rss+xml" rel="alternate" title="<{$site_name/}>" />
+    </head>
+    <body>
+        <div id="header"><div class="inner"><{$site_title/}>&nbsp;&nbsp;<small><{$site_description/}></small></div></div>
+        <div id="wrap">
+            <div id="container">
+                <div id="main">
+                    <{$article/}>
+                    <div id="readmore">
+                        <{$next/}><{$previous/}>
+                        <div style="clear:both"></div>
+                    </div>
+                </div>
+                <div id="aside">
+                    <div id="profile">
+                        <h2 id="search">搜索：</h2>
+                        <form name="searchFrom" id="searchFrom" action="http://www.baidu.com/s" method="get" target="_blank">
+                            <input type="radio" value="2097152" checked="checked" id="searchRadio" name="ct"><label for="site">站内</label>&nbsp;<input type="radio" value="0" name="ct" id="www"><label for="www">互联网</label><br>
+                            <input name="wd" type="text" size="15" maxlength="40">
+                            <input name="ie" type="hidden" value="utf-8">
+                            <input name="si" type="hidden" value="<{$site_domain/}>">
+                            <input name="tn" type="hidden" value="bds">
+                        </form>
+
+                        <h2>订阅本博客</h2>
+                        <p><a href="rss.xml" class="rss">.))RSS</a></p>
+                        
+                        <script type="text/javascript"><!-- 
+                            google_ad_client = "pub-9423925308267208";
+                            /* 180x180, 创建于 09-4-30 */
+                            google_ad_slot = "1997394311";
+                            google_ad_width = 200;
+                            google_ad_height = 200;
+                            //-->
+                        </script>
+                        <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+                    </div>
+                </div>
+                <div id="footer">
+                    <p id="poem">【陋室铭】 山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云："何陋之有？"
+                    </p>
+                    <p id="copyright">
+                    &copy;<{$site_name/}> 版权所有.本博客程序采用XPress <{$version/}>构建.<a href="rss.xml" class="rss">.))RSS</a></div>
+                    </p>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+    </body>
+</html>

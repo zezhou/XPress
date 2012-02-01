@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <title>管理面板</title>
+    <script src="../../../js/jquery-1.4.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/panel.css" />
+    <style type="text/css">
+    #menu ul,#menu li{float:left;}
+    #menu li{padding:2px 5px;}
+    #mainPanel{padding:0;margin:0;width:100%;height:100%;}
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1><span id="siteName"></span><span class="sub">管理面版</span></h1>
+        <div id="menu">加载中...</div>
+        <div style="clear:both"></div>
+    </div>
+    <div id="panel">
+        <iframe id="mainPanel" name="mainPanel"  frameborder='0' scrolling='auto' src=""  allowTransparency="true"></iframe>
+    </div>
+</body>
+<script>
+
+var ui={
+    "mainPanel":"#mainPanel"
+};
+
+ui.menu=function(options){
+    if(options&&options.data&&options.to){
+        var menuHTML="<ul>";
+        for(var i=0;i<options.data.length;i++){
+            var item=options.data[i];
+            menuHTML+="<li><a href='../"+item.url+"' target='mainPanel'>"+item.name+"</a></li>";
+        }
+        menuHTML+="</ul><div style='clear:both'></div>";
+        $(options.to).html(menuHTML);
+        $(ui.mainPanel).attr("src","../"+options.data[0].url);
+    }
+}
+ui.adjustIframe = function (target) {
+    var iframe = $(target);
+    var idoc = iframe[0].contentWindow || iframe[0].contentWindow.document || iframe[0].contentDocument;
+    var iheight = Math.max($(idoc).height(), iframe.height()); //取得其高
+    iframe.height(iheight);
+}
+
+ui.init=function(){
+    $.post("../../../api.php?request=admin/data",{"action":"init"},function(initData){
+        if (initData){
+            if (initData.siteName){
+                $("#siteName").html(initData.siteName);
+            }
+            if(initData.menu){
+                ui.menu({"data":initData.menu,"to":"#menu"});        
+            }
+
+        }
+    },"json");
+    ui.adjustIframe("#mainPanel");
+}
+ui.init();
+</script>
+</html>

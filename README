@@ -1,0 +1,21 @@
+XPress 博客系统说明
+~~~~~~~~~~~~~~~~~~~
+
+作者: 阿徐  (xyzhtml@163.com)
+
+介绍: 一个简单的自娱自乐的PHP+SQLite博客系统。
+
+特色:
+    *    支持所见即所得编辑，源代码编辑和markdown编辑
+    *    PHP + SQLITE
+    *    内容生成静态化
+
+安装:
+    *    将release里的文件传到支持php的主机空间
+    *    非window主机请将'博客所在目录'以及目录下的'admin'目录,'post'目录,'rss.xml'文件的权限修改为777。
+    *    在浏览器里打开admin/app/install/install.php，按提示安装即可
+    *    也可通过运行etc/install.sh后访问admin/app/install/install.php来安装
+
+LICENSE:
+    BSD licenses
+    http://www.freebsd.org/copyright/freebsd-license.html

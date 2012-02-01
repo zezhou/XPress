@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>发布文章</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/form.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/panel.css" />
+    <script src="../../../js/jquery-1.4.2.min.js"></script>
+    <script src="../../../js/x.js"></script>
+</head>
+
+<body>
+<div id="container">
+	<div id="content">
+        <div id="title" class="row">
+            <div class="head">标题</div>
+            <div class="data">
+                <input type="text" name="title" size=20>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div id="editorContainer" class="form-row-padding"></div>
+        <div id="tags" class="row">
+            <div class="head">标签</div>
+            <div class="data">
+                <input type="text" name="tags" size=20><span class="tips">(,号分割)</span>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div id="btns" class="form-row-padding">
+        	<input type="submit" value="自动保存" id="save_btn"/>
+        	<input type="submit" value="预览" id="preview_btn"/>
+        	<input type="submit" value="发布" id="publish_btn"/>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+</div>
+</body>
+<script src="../../../js/editor.js"></script>
+<script>
+    var post={};
+    post.save=function(options){
+        options = options||{};
+        $("#save_btn").val("保存中...");
+        var data={};
+        data.content=post.editor.val();
+        data.title=$("input[name=title]").val();
+        data.tags=$("input[name=tags]").val();
+        data.request = "article/edit";
+        data.mode = post.editor.mode;
+        var articleId=$.hash("id");
+        if (articleId){
+            data.action="update";
+            data.id=articleId;
+        }else{
+            data.action="post";
+        }
+        $.post("../../../api.php",data,function(response){
+            if(response && response.success){
+                $("#save_btn").val("保存成功");
+                if (response.data){
+                $.hash("id",response.data);
+                }
+                if (options.callback){
+                    options.callback.call(this,response);
+                }
+            }else{
+                var  msg=response.message||"";
+                if(msg){
+                    msg="原因:"+msg;
+                }else{
+                    msg="";
+                }
+                msg="保存文章失败."+msg;
+                alert(msg);
+            }
+        },"json");
+    }
+
+    post.publish=function(){
+        $("#publish_btn").val("发布中...");
+        post.save({"callback":function(){
+            var data={
+                "request":"article/publish",
+                "action":"update",
+                "type":"post"
+            };
+            $.post("../../../api.php",data,function(response){
+                if(response && response.success){
+                    $("#publish_btn").val("发布成功");
+                }else{
+                    var  msg=response.message||"";
+                    if (msg){
+                        msg="失败原因"+msg;
+                    }
+                    alert("发布失败."+msg);
+                }
+            },"json");
+            },
+            "mode":post.editor.mode
+        }
+        );
+
+    }
+
+    post.preview=function(){
+        post.save({"callback":function(options){
+            if (!options) options={};
+            var article_id = options.data || $.hash("id");
+            if (article_id){
+                window.open("./preview.php?id="+article_id);
+            }else{
+                alert("没有找到文章ID.");
+            }   
+            },
+            "mode":post.editor.mode
+        });
+    }
+
+    post.loadData=function(id){
+        var data={};
+        data.request="admin/data";
+        data.id=id;
+        data.action="getArticle";
+        $.post("../../../api.php",data,function(response){
+            if(response && response.success){
+                var article=response.data;
+                if(article.title){
+                    $("input[name=title]").val(article.title);
+                }
+                if(article.content){
+                    post.editor.value=article.content;
+                }
+                post.editor.create("editorContainer","editorContent");
+                if(article.tags){
+                    $("input[name=tags]").val(article.tags);
+                }
+            }
+        },"json")
+    }
+
+    post.editor=new X.Editor({
+            "editorPath":"../../../",
+            "preview":post.preview
+        });
+
+    post.init=function(){
+        var postType=$.hash("type")||"post";
+        if(postType=="edit"){
+            var id=$.hash("id");
+            post.loadData(id);
+        }else{
+            post.editor.create("editorContainer","editorContent");
+        }
+        $("#save_btn").click(post.save);
+        $("#preview_btn").click(post.preview);
+        $("#publish_btn").click(post.publish);
+    }
+
+    post.init();
+
+</script>
+</html>
