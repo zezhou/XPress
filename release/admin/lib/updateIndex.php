@@ -71,7 +71,7 @@ class UpdateIndex extends Data{
  		$aData['site_description']=SITE_DESCRIPTION;
  		$aData['aside']="博主简介";
  		/*
- 		 * main article to present to index page.
+ 		 * present main article in index page.
  		 */
 
  		$sSql="select id,title,content,tags,time,author,url from ".DATABASE_ARTICLES_NAME." order by id DESC limit ".$nStartNum.",".$nUpdateNum ;
@@ -79,13 +79,13 @@ class UpdateIndex extends Data{
  			$article="<ol id=\"content\">";
  			foreach($aResult as $key=>$value){
  				$sDateYM=@date("y-m",intval($value['time']));
-                $sDateD=@date("d",intval($value['time']));
+        $sDateD=@date("d",intval($value['time']));
  				$article.=<<<EOF
 <li>
 <h2 class="title">
 <div class="time"><em class="time-y-m">{$sDateYM}</em><big>{$sDateD}</big></div>
 <a href="{$value['url']}">{$value['title']}</a>
-<br><small>{$value['author']}&nbsp;关键词:{$value['tags']}</small>
+<br><small>{$value['author']}&nbsp;关键词:{$this->getTagHTML($value["tags"])}</small>
 </h2>{$value['content']}
 </li>
 EOF;
@@ -180,5 +180,16 @@ EOF;
         $aData['next']='<div id="next" class="fl"></div>';
         return $aData;
     }
-
+    /**
+     * 生成tag
+     */
+    function getTagHTML($tagString){
+      $tagString = str_replace("，",",",$tagString);
+      $terms = explode(",",$tagString);
+      $tags=array();
+      foreach($terms as $tagKey=>$tagValue){
+        $tags[] = "<a href='http://www.baidu.com/s?wd=".urlencode($tagValue)."+site%3Aaxu.com.cn' target='_blank'>".$tagValue."</a>"; 
+      }
+      return implode(" , ",$tags);
+    }
 }

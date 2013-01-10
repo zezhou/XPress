@@ -31,3 +31,11 @@
     background:#d9e8fb;
 }
 #next{float:right;}
+#content>li{
+  border-bottom: 1px dashed #DDD;
+  margin:8px 0;
+  padding:0 0 8px 0;
+}
+#content>li:last-child{
+  border-bottom: 0;
+}

@@ -58,6 +58,7 @@ class Publish extends Data{
 		if (is_array($checkedData)&&sizeof($checkedData)>0){
             foreach($checkedData as $key=>$value){
                 $data=$this->getData($value);
+                $data['tags'] = $this->getTagHTML($data['tags']);
                 $bReturn=$this->createArticleHtml($data,ARTICLE_PAGE_TPL)&&$bReturn;
             }
 		
@@ -166,5 +167,17 @@ class Publish extends Data{
         require_once(ADMIN_LIB_PATH."updateIndex.php");
 		$index=new updateIndex();
 		return $index->update();	
-	}
+  }
+  /**
+   * 生成tag
+   */
+  function getTagHTML($tagString){
+    $tagString = str_replace("，",",",$tagString);
+    $terms = explode(",",$tagString);
+    $tags=array();
+    foreach($terms as $tagKey=>$tagValue){
+      $tags[] = "<a href='http://www.baidu.com/s?wd=".urlencode($tagValue)."+site%3Aaxu.com.cn' target='_blank'>".$tagValue."</a>"; 
+    }
+    return implode(" , ",$tags);
+  }
 }
